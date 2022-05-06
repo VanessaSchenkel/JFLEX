@@ -285,7 +285,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
     
 		//ID main is created
-		System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ",\"main\"]");
+		System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ",\"main\"]");
 		++varCount;	
 		++scopeCount;
 	}
@@ -313,7 +313,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID printf is created
-		System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"printf\"] ");
+		System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"printf\"] ");
 
 		++varCount;	
 
@@ -324,16 +324,14 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 
 		//ID scanf is created
-    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"scanf\"] ");
+    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"scanf\"] ");
 		++varCount;	
 		++scopeCount;
 		System.out.println("<stdio.h> library scope has been imported");
 	}
 
-	
   boolean isConioLib = yytext().equals("#include <conio.h>");
-	if(isConioLib) {//It's equal
-		
+	if(isConioLib) {
     //Scope conio library creation
 		System.out.println("<conio.h> library will be imported");
     
@@ -355,7 +353,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID clrscr is created
-    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"clrscr\"] ");
+    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"clrscr\"] ");
 		++varCount;	
 		
     variableLocal.setScope(scopeCount);
@@ -365,7 +363,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID getch is created
-    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"getch\"] ");
+    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"getch\"] ");
     
 		++varCount;	
 		System.out.println("<conio.h> library scope has been imported");
@@ -400,7 +398,7 @@ void scopeInclude(){
 	int id = checkID();
   newSubcope = false;
 	isDeclaration = false;
-  System.out.println("[ID " + id + ", Escopo " +  dictionary.get(id).getScope() + ", Subscopo " +  dictionary.get(id).getSubscope() + ", "+ yytext() + "]");
+  System.out.println("[ID " + id + ", Scope " +  dictionary.get(id).getScope() + ", Subscope " +  dictionary.get(id).getSubscope() + ", "+ yytext() + "]");
 }
 	
 {RELATIONAL_OP}        {System.out.printf("[Relational_Op, %s]\n", yytext());}
@@ -446,4 +444,4 @@ void scopeInclude(){
 
 {SINGLE_LINE_COMMENT} | {BLOCK_COMMENT} | [ "\\t"]+ | "\\n" | " \\n" | "\\t" {}
 
-. {System.out.printf("\nNao reconhecido: \n" + "<" + yytext()+">");}
+. {System.out.printf("\nNot recognized: \n" + "<" + yytext()+">");}
