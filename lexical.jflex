@@ -38,7 +38,7 @@ SINGLE_LINE_COMMENT 	          = ("//".+"\n")
 STRING					                = (\"[^\n]+\")
 
 %{
-  boolean isDeclaration = false; 
+ boolean isDeclaration = false; 
   boolean newSubcope = false; 
   boolean isThereSubscope = false; 
 
@@ -51,7 +51,7 @@ STRING					                = (\"[^\n]+\")
     public boolean isClosed; 
 
     public boolean getIsClosed(){
-      return this.isClosed;
+      return isClosed;
     }
 
     public void setIsClosed(boolean isClosed){
@@ -76,7 +76,7 @@ STRING					                = (\"[^\n]+\")
     }
 
     public boolean getIsClosed(){
-      return this.isClosed;
+      return isClosed;
     }
 
     public void setIsClosed(boolean isClosed){
@@ -84,7 +84,7 @@ STRING					                = (\"[^\n]+\")
     }
 
     public boolean getIsLibrary(){
-      return this.isLibrary;
+      return isLibrary;
     }
 
     public void setIsLibrary(boolean isLibrary){
@@ -92,7 +92,7 @@ STRING					                = (\"[^\n]+\")
     }
 
     public int getSubscopeCount(){
-      return this.subscopeCount;
+      return subscopeCount;
     }
     
     public void setSubscopeCount(int subscopeCount){
@@ -151,8 +151,8 @@ public void checkPointer(){
 	boolean isPointer = yytext().equals("*(");
 
 	if(isPointer) {//it'is a pointer and a L_paren
-		System.out.println("[Pointer, *]");
-		System.out.println("[L_Paren, (]");
+		System.out.printf("[Pointer, *]\n");
+		System.out.printf("[L_Paren, (]\n");
 		return;
 	}
 	
@@ -167,6 +167,7 @@ public void checkPointer(){
 }
 
 int createId(){	
+	//Copy the string 1 (from input) to the new id (dictionary value)
   Variables variable = new Variables();
   variable.setValue(yytext());
 
@@ -204,9 +205,9 @@ int checkID(){
 		return createSubscope();
 	}
 	
-  boolean isMain = yytext().equals("main"); 
-  if(isMain){
-		//scope 0 is closed
+  boolean ret = yytext().equals("main"); 
+  if(ret){
+		//scope 00 is closed
 		scopes.get(0).setIsClosed(false);
 		scopes.get(0).setIsLibrary(true);
 		
@@ -225,7 +226,7 @@ int checkID(){
 	for(int i = varCount-1; i>=0; i--){
     boolean isEqual = yytext().equals(dictionary.get(i).getValue()); 
     
-    if(isEqual) {
+    if(isEqual) {//it's equal
 			int scopeID = dictionary.get(i).getScope();
 			int subscopeID = dictionary.get(i).getSubscope();
 
@@ -240,16 +241,19 @@ int checkID(){
 			}		
 		}
 	}
+
 	return createId();
 }
 
 
 int createSubscope(){	
+	//save the current braceCounter
 	braceCounterSubscope = braceCounter;
 	scopes.get(scopeCount).setSubscopeCount(1);
   scopes.get(scopeCount).setSubscope(1, false);
 	isThereSubscope = true;
 	
+	//Copy the string 1 (from input) to the new id (dictionary value)
   Variables variable = new Variables();
   variable.setValue(yytext());
   variable.setScope(scopeCount);
@@ -281,7 +285,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
     
 		//ID main is created
-		System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ",\"main\"]");
+		System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ",\"main\"]");
 		++varCount;	
 		++scopeCount;
 	}
@@ -309,7 +313,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID printf is created
-		System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"printf\"] ");
+		System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"printf\"] ");
 
 		++varCount;	
 
@@ -320,7 +324,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 
 		//ID scanf is created
-    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"scanf\"] ");
+    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"scanf\"] ");
 		++varCount;	
 		++scopeCount;
 		System.out.println("<stdio.h> library scope has been imported");
@@ -351,7 +355,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID clrscr is created
-    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"clrscr\"] ");
+    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"clrscr\"] ");
 		++varCount;	
 		
     variableLocal.setScope(scopeCount);
@@ -361,7 +365,7 @@ void scopeInclude(){
     dictionary.add(varCount, variableLocal);
 		
     //ID getch is created
-    System.out.println("[ID " + varCount + ", Scope " +  dictionary.get(varCount).getScope() + ", Subscope " +  dictionary.get(varCount).getSubscope() + ", \"getch\"] ");
+    System.out.println("[ID " + varCount + ", Escopo " +  dictionary.get(varCount).getScope() + ", Subscopo " +  dictionary.get(varCount).getSubscope() + ", \"getch\"] ");
     
 		++varCount;	
 		System.out.println("<conio.h> library scope has been imported");
@@ -372,53 +376,11 @@ void scopeInclude(){
 
 %%
 /* LEXICAL RULES */
-{ADDRESS}              {System.out.println("[Address, &]");}
+{DIGIT}+  {System.out.printf("[num, %d]\n", Integer.parseInt(yytext()));}
 
-{ARITH_OP}             {System.out.printf("[Arith_Op: %s]\n", yytext());}
+{FLOAT}   {System.out.printf("[num, %.1f]\n", Float.parseFloat(yytext()));}
 
-{COMMA}                {System.out.println("[Comma, ,]");}
-
-{DIGIT}+               {System.out.printf("[Digit, %d]\n", Integer.parseInt(yytext()));}
-
-{DECREMENT_OP}         {System.out.println("[Dec_Op, --]");}
-
-{EQUAL}                {System.out.println("[Equal, =]");}
-
-{FLOAT}                {System.out.printf("[Float, %.1f]\n", Float.parseFloat(yytext()));}
-
-{ID} {
-	int id = checkID();
-  newSubcope = false;
-	isDeclaration = false;
-  System.out.println("[ID " + id + ", Scope " +  dictionary.get(id).getScope() + ", Subscope " +  dictionary.get(id).getSubscope() + ", "+ yytext() + "]");
-}
-
-{INCREMENT_OP}         {System.out.println("[Inc_Op, ++]");}
-
-{INCLUDE}              {scopeInclude();}
-
-{LOGIC_OP}             {System.out.printf("[Logic_Op, %s]\n", yytext());}
-
-{L_PAREN}              {System.out.println("[L_Paren, (]");}
-
-{L_BRACKET}            {System.out.println("[L_Bracket, []");}
-
-{L_BRACE} {
-	++braceCounter;
-	System.out.println("[L_Brace, {]");
-}
-
-{R_PAREN}              {System.out.println("[R_Paren, )]");}
-
-{R_BRACKET}            {System.out.println("[R_Bracket, ]]");}
-
-{R_BRACE} {
-	--braceCounter;
-	checkScope();
-	System.out.println("[R_Brace, }]");
-}
-
-{RESERVED_WORD}	       {System.out.printf("[reserved_word, %s]\n", yytext());}
+{RESERVED_WORD}	{System.out.printf("[reserved_word, %s]\n", yytext());}
 
 {RESERVED_WORD_DECLARATION}	{
 	isDeclaration = true;
@@ -434,12 +396,54 @@ void scopeInclude(){
 	checkPointer();
 }
 
+{ID} {
+	int id = checkID();
+  newSubcope = false;
+	isDeclaration = false;
+  System.out.println("[ID " + id + ", Escopo " +  dictionary.get(id).getScope() + ", Subscopo " +  dictionary.get(id).getSubscope() + ", "+ yytext() + "]");
+}
+	
 {RELATIONAL_OP}        {System.out.printf("[Relational_Op, %s]\n", yytext());}
+	
+{LOGIC_OP}             {System.out.printf("[Logic_Op, %s]\n", yytext());}
 
-{SEMICOLON}            {System.out.println("[Semicolon, ;]");}
+{ARITH_OP}             {System.out.printf("[Arith_Op: %s]\n", yytext());}
 
-{STRING}               {System.out.printf("[String_literal, %s]\n", yytext());}
+{INCREMENT_OP}         {System.out.println("[Inc_Op, ++]");}
+
+{DECREMENT_OP}         {System.out.println("[Dec_Op, --]");}
+
+{ADDRESS}              {System.out.println("[Address, &]");}
+
+{EQUAL}                {System.out.println("[Equal, =]");}
+
+{L_PAREN}              {System.out.println("[L_Paren, (]");}
+
+{R_PAREN}              {System.out.println("[R_Paren, )]");}
+
+{L_BRACKET}            {System.out.println("[L_Bracket, []");}
+
+{R_BRACKET}            {System.out.println("[R_Bracket, ]]");}
+
+{L_BRACE} {
+	++braceCounter;
+	System.out.println("[L_Brace, {]");
+}
+
+{R_BRACE} {
+	--braceCounter;
+	checkScope();
+	System.out.println("[R_Brace, }]");
+}
+
+{COMMA}               {System.out.println("[Comma, ,]");}
+
+{SEMICOLON}           {System.out.println("[Semicolon, ;]");}
+
+{STRING}                 {System.out.printf("[String_literal, %s]\n", yytext());}
+
+{INCLUDE}             {scopeInclude();}
 
 {SINGLE_LINE_COMMENT} | {BLOCK_COMMENT} | [ "\\t"]+ | "\\n" | " \\n" | "\\t" {}
 
-. {System.out.printf("NOT RECOGNIZED: \n" + "<" + yytext()+">");}
+. {System.out.printf("\nNao reconhecido: \n" + "<" + yytext()+">");}
